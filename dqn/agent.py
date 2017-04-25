@@ -30,8 +30,6 @@ class Agent(BaseModel):
     self.build_dqn()
 
   def train(self):
-
-    print("TRAIN")
     start_step = self.step_op.eval()
     start_time = time.time()
 
@@ -92,7 +90,8 @@ class Agent(BaseModel):
 
             max_avg_ep_reward = max(max_avg_ep_reward, avg_ep_reward)
 
-          if self.step > -10:
+          #180
+          if self.step > 1:
             self.inject_summary({
                 'average.reward': avg_reward,
                 'average.loss': avg_loss,
@@ -106,8 +105,6 @@ class Agent(BaseModel):
                 'training.learning_rate': self.learning_rate_op.eval({self.learning_rate_step: self.step}),
               }, self.step)
 
-          summary, acc = sess.run([merged, accuracy], feed_dict=feed_dict(False))
-          test_writer.add_summary(summary, i)
 
 
 
@@ -185,7 +182,7 @@ class Agent(BaseModel):
   def build_dqn(self):
     self.w = {}
     self.t_w = {}
-    print("BUIDING")
+
     #initializer = tf.contrib.layers.xavier_initializer()
     initializer = tf.truncated_normal_initializer(0, 0.02)
     activation_fn = tf.nn.relu
@@ -333,7 +330,7 @@ class Agent(BaseModel):
         self.summary_ops[tag]  = tf.histogram_summary(tag, self.summary_placeholders[tag])
 
       #self.writer = tf.summary.FileWriter('./logs/%s' % self.model_dir, self.sess.graph)
-      self.writer = tf.train.SummaryWriter('./train2/%s' % self.model_dir,
+      self.writer = tf.train.SummaryWriter('./logs/%s' % self.model_dir,
                                       self.sess.graph)
       tf.initialize_all_variables().run()
 
@@ -418,4 +415,4 @@ class Agent(BaseModel):
 
     if not self.display:
       self.env.env.monitor.close()
-      #gym.upload(gym_dir, writeup='https://github.com/devsisters/DQN-tensorflow', api_key='sk_Hv2ARpzRgGxtTjgo5Alfw')
+      gym.upload(gym_dir, writeup='https://github.com/devsisters/DQN-tensorflow', api_key='sk_Hv2ARpzRgGxtTjgo5Alfw')

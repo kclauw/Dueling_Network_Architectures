@@ -1,5 +1,5 @@
 class AgentConfig(object):
-  scale = 10000
+  scale = 1000
   display = False
 
   max_step = 5000 * scale
@@ -65,4 +65,4 @@ def get_config(FLAGS):
     if hasattr(config, k):
       setattr(config, k, v)
 
-  return config
+return config
