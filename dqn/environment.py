@@ -7,6 +7,7 @@ class Environment(object):
   def __init__(self, config):
     self.env = gym.make(config.env_name)
 
+
     screen_width, screen_height, self.action_repeat, self.random_start = \
         config.screen_width, config.screen_height, config.action_repeat, config.random_start
 
@@ -67,6 +68,8 @@ class GymEnvironment(Environment):
     super(GymEnvironment, self).__init__(config)
 
   def act(self, action, is_training=True):
+
+
     cumulated_reward = 0
     start_lives = self.lives
 
@@ -95,3 +98,5 @@ class SimpleGymEnvironment(Environment):
 
     self.after_act(action)
     return self.state
+
+

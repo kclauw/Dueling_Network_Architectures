@@ -30,6 +30,8 @@ class Agent(BaseModel):
     self.build_dqn()
 
   def train(self):
+
+    print("TRAIN")
     start_step = self.step_op.eval()
     start_time = time.time()
 
@@ -90,7 +92,7 @@ class Agent(BaseModel):
 
             max_avg_ep_reward = max(max_avg_ep_reward, avg_ep_reward)
 
-          if self.step > 180:
+          if self.step > -10:
             self.inject_summary({
                 'average.reward': avg_reward,
                 'average.loss': avg_loss,
@@ -103,6 +105,11 @@ class Agent(BaseModel):
                 'episode.actions': actions,
                 'training.learning_rate': self.learning_rate_op.eval({self.learning_rate_step: self.step}),
               }, self.step)
+
+          summary, acc = sess.run([merged, accuracy], feed_dict=feed_dict(False))
+          test_writer.add_summary(summary, i)
+
+
 
           num_game = 0
           total_reward = 0.
@@ -129,6 +136,8 @@ class Agent(BaseModel):
     reward = max(self.min_reward, min(self.max_reward, reward))
 
     self.history.add(screen)
+
+     #INSERT INTO THE EXPERIENCE REPLAY
     self.memory.add(screen, reward, action, terminal)
 
     if self.step > self.learn_start:
@@ -176,7 +185,7 @@ class Agent(BaseModel):
   def build_dqn(self):
     self.w = {}
     self.t_w = {}
-
+    print("BUIDING")
     #initializer = tf.contrib.layers.xavier_initializer()
     initializer = tf.truncated_normal_initializer(0, 0.02)
     activation_fn = tf.nn.relu
@@ -225,8 +234,10 @@ class Agent(BaseModel):
       q_summary = []
       avg_q = tf.reduce_mean(self.q, 0)
       for idx in xrange(self.env.action_size):
-        q_summary.append(tf.summary.histogram('q/%s' % idx, avg_q[idx]))
-      self.q_summary = tf.summary.merge(q_summary, 'q_summary')
+        q_summary.append(tf.histogram_summary('q/%s' % idx, avg_q[idx]))
+      tf.merge_all_summaries()
+
+      self.q_summary = tf.merge_summary(q_summary, 'q_summary')
 
     # target network
     with tf.variable_scope('target'):
@@ -313,17 +324,22 @@ class Agent(BaseModel):
 
       for tag in scalar_summary_tags:
         self.summary_placeholders[tag] = tf.placeholder('float32', None, name=tag.replace(' ', '_'))
-        self.summary_ops[tag]  = tf.summary.scalar("%s-%s/%s" % (self.env_name, self.env_type, tag), self.summary_placeholders[tag])
+        self.summary_ops[tag]  = tf.scalar_summary("%s-%s/%s" % (self.env_name, self.env_type, tag), self.summary_placeholders[tag])
 
       histogram_summary_tags = ['episode.rewards', 'episode.actions']
 
       for tag in histogram_summary_tags:
         self.summary_placeholders[tag] = tf.placeholder('float32', None, name=tag.replace(' ', '_'))
-        self.summary_ops[tag]  = tf.summary.histogram(tag, self.summary_placeholders[tag])
+        self.summary_ops[tag]  = tf.histogram_summary(tag, self.summary_placeholders[tag])
 
-      self.writer = tf.summary.FileWriter('./logs/%s' % self.model_dir, self.sess.graph)
+      #self.writer = tf.summary.FileWriter('./logs/%s' % self.model_dir, self.sess.graph)
+      self.writer = tf.train.SummaryWriter('./train2/%s' % self.model_dir,
+                                      self.sess.graph)
+      tf.initialize_all_variables().run()
+
 
     tf.initialize_all_variables().run()
+
 
     self._saver = tf.train.Saver(self.w.values() + [self.step_op], max_to_keep=30)
 
@@ -402,4 +418,4 @@ class Agent(BaseModel):
 
     if not self.display:
       self.env.env.monitor.close()
-      #gym.upload(gym_dir, writeup='https://github.com/devsisters/DQN-tensorflow', api_key='')
+      #gym.upload(gym_dir, writeup='https://github.com/devsisters/DQN-tensorflow', api_key='sk_Hv2ARpzRgGxtTjgo5Alfw')
