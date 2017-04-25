@@ -91,7 +91,7 @@ class Agent(BaseModel):
             max_avg_ep_reward = max(max_avg_ep_reward, avg_ep_reward)
 
           #180
-          if self.step > 1:
+          if self.step > 180:
             self.inject_summary({
                 'average.reward': avg_reward,
                 'average.loss': avg_loss,

@@ -1,9 +1,9 @@
 class AgentConfig(object):
-  scale = 1000
+  scale = 10000
   display = False
 
   max_step = 5000 * scale
-  memory_size = 100 * scale
+  memory_size = 25 * scale #Reduced memory size
 
   batch_size = 32
   random_start = 30
@@ -65,4 +65,4 @@ def get_config(FLAGS):
     if hasattr(config, k):
       setattr(config, k, v)
 
-return config
+  return config
