@@ -16,4 +16,4 @@ cd $HOME
 source .bashrc
 source activate dqn2
 cd Dueling_Network_Architectures
-python main.py --use_gpu 0 --env_name Atlantis-v0 --is_train 1 --double_q 1 --model M1 --random_seed 123
+python main.py --use_gpu 0 --env_name Atlantis-v0 --is_train 1 --double_q 1 --random_seed 123
