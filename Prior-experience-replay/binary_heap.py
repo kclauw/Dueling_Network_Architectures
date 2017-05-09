@@ -8,6 +8,7 @@ import sys
 import math
 
 import utility
+import numpy as np
 
 
 class BinaryHeap(object):
@@ -38,7 +39,7 @@ class BinaryHeap(object):
         :return: string of the priority queue, with level info
         """
         if self.size == 0:
-            return 'Empty !  ! ! ! !'
+            return 'No element in heap!'
         to_string = ''
         level = -1
         max_level = math.floor(math.log(self.size, 2))
@@ -209,7 +210,7 @@ class BinaryHeap(object):
             self.e2p[e_id] = cnt
             cnt += 1
         # sort the heap
-        for i in range(math.floor(self.size / 2), 1, -1):
+        for i in np.arange(math.floor(self.size / 2), 1, -1):
             self.down_heap(i)
 
     def priority_to_experience(self, priority_ids):
