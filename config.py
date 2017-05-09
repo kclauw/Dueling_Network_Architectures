@@ -3,7 +3,7 @@ class AgentConfig(object):
   display = False
 
   max_step = 5000 * scale
-  memory_size = 25 * scale #Reduced memory size
+  memory_size = 50 * scale #Reduced memory size
 
   batch_size = 32
   random_start = 30
@@ -35,8 +35,8 @@ class AgentConfig(object):
 class EnvironmentConfig(object):
   env_name = 'Breakout-v0'
 
-  screen_width  = 44
-  screen_height = 44
+  screen_width  = 84
+  screen_height = 84
   max_reward = 1.
   min_reward = -1.
 
@@ -47,7 +47,7 @@ class DQNConfig(AgentConfig, EnvironmentConfig):
 class M1(DQNConfig):
   backend = 'tf'
   env_type = 'detail'
-  action_repeat = 1
+  action_repeat = 4
 
 def get_config(FLAGS):
   if FLAGS.model == 'm1':
