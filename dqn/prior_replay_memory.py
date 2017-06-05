@@ -1,3 +1,4 @@
+#Code from https://github.com/Damcy/prioritized-experience-replay
 import binary_heap
 import math 
 from .utils import save_npy, load_npy
@@ -13,7 +14,6 @@ class PrioritizedMemory:
     self.beta_zero = 0.5
     self.replace_flag = True
     self.count = 0
-    # partition number N, split total size to N part
     self.partition_num = 30
 
     self.index = 0
