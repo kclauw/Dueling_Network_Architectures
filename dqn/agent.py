@@ -167,7 +167,7 @@ class Agent(BaseModel):
     if self.memory.count < self.history_length:
       return
     elif self.config.prior:
-        s_t, action, reward, s_t_plus_1, terminal, weights, indices = self.memory.sample(global_step=self.step)
+        s_t, action, reward, s_t_plus_1, terminal, w, indices = self.memory.sample(global_step=self.step)
     else:
       s_t, action, reward, s_t_plus_1, terminal = self.memory.sample()
 
@@ -192,18 +192,19 @@ class Agent(BaseModel):
       max_q_t_plus_1 = np.max(q_t_plus_1, axis=1)
       target_q_t = (1. - terminal) * self.discount * max_q_t_plus_1 + reward
 
-    _, q_t, loss, weighted_delta = self.sess.run([self.optim, self.q, self.loss, self.weighted_delta], {
+    _, q_t, loss, delta_weight = self.sess.run([self.optim, self.q, self.loss, self.delta_weight], {
       self.target_q_t: target_q_t,
       self.action: action,
       self.s_t: s_t,
       self.learning_rate_step: self.step,
-      self.importance_weight: weights
+      self.sampling_weights: w
     })
 
 
 
     if self.config.prior:
-                self.memory.update_priority(indices, weighted_delta)      
+                self.memory.update_priority(indices, delta_weight) 
+                self.memory.rebalance()    
 
     #self.writer.add_summary(summary_str, self.step)
     self.total_loss += loss
@@ -328,9 +329,8 @@ class Agent(BaseModel):
       q_acted = tf.reduce_sum(self.q * action_one_hot, reduction_indices=1, name='q_acted')
 
       self.delta = self.target_q_t - q_acted
-
-      self.importance_weight = tf.placeholder(name = 'importance_weight', shape = (None), dtype = tf.float32)
-      self.weighted_delta = tf.mul(self.delta, self.importance_weight)
+      self.sampling_weights = tf.placeholder(name = 'sampling_weights', shape = (None), dtype = tf.float32)
+      self.delta_weight = tf.mul(self.delta, self.sampling_weights)
 
 
 
