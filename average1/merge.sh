@@ -1,10 +1,3 @@
 #!/bin/bash -l
 
-qsub hydra_atlantis_base.sh
-qsub hydra_atlantis_ddqn.sh
-qsub hydra_atlantis_dueling.sh
-qsub hydra_atlantis_dueling_ddqn.sh
-qsub hydra_space_base.sh
-qsub hydra_space_ddqn.sh
-qsub hydra_space_dueling.sh
-qsub hydra_space_dueling_ddqn.sh
+qsub  hydra_atlantis_prior.sh;qsub hydra_atlantis_prior_ddqn.sh;qsub hydra_atlantis_prior_ddqn_duel.sh;qsub  hydra_space_prior.sh;qsub hydra_space_prior_ddqn.sh;qsub hydra_space_prior_ddqn_duel.sh

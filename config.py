@@ -28,6 +28,7 @@ class AgentConfig(object):
 
   double_q = False
   dueling = False
+  prior = False
 
   _test_step = 5 * scale
   _save_step = _test_step * 10

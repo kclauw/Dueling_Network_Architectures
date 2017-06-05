@@ -48,10 +48,11 @@ class Experience(object):
         partition_num = 1
         # each part size
         partition_size = math.floor(self.size / n_partitions)
-        print(partition_size)
 
         for n in np.arange(partition_size, self.size + 1, partition_size):
+            print("partition",n)
             if self.learn_start <= n <= self.priority_size:
+
                 distribution = {}
                 # P(i) = (rank i) ^ (-alpha) / sum ((rank i) ^ (-alpha))
                 pdf = list(
@@ -69,10 +70,9 @@ class Experience(object):
                 
               
                 strata_ends = {1: 0, self.batch_size + 1: int(n)}
+
                 step = 1 / float(self.batch_size)
                 index = 1
-                print("STEP")
-                print(step)
                 for s in  range(2, self.batch_size + 1):
                     while cdf[index] < step:
                         index += 1
@@ -80,9 +80,13 @@ class Experience(object):
                     step += 1 / float(self.batch_size)
                 distribution['strata_ends'] = strata_ends
                 res[partition_num] = distribution
+           #     print(n)
+            #    print(distribution['strata_ends'])
 
             partition_num += 1
-
+        print("strata_ends")
+      
+        #print(res)
         return res
 
     def fix_index(self):
@@ -162,6 +166,10 @@ class Experience(object):
             return False, False, False
 
         dist_index = int(math.floor(self.record_size / self.size * self.partition_num))
+        print("record_size",self.record_size)
+        print("mem size",self.record_size)
+        print("partition num",self.partition_num)
+        print(dist_index)
         # issue 1 by @camigord
         partition_size = math.floor(self.size / self.partition_num)
         partition_max = dist_index * partition_size
@@ -169,16 +177,8 @@ class Experience(object):
         rank_list = []
         # sample from k segments
         for n in range(1, self.batch_size + 1):
-            print("N")
-            print(n)
-            print("DISTRI")
-            print(distribution['strata_ends'])
-            print(distribution['strata_ends'][n])
-            print(distribution['strata_ends'][n + 1])
-   
             index = random.randint(distribution['strata_ends'][n] + 1,
                                    distribution['strata_ends'][n + 1])
-          #  print()
             rank_list.append(index)
 
         # beta, increase by global_step, max 1
