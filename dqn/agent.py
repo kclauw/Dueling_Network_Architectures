@@ -167,7 +167,7 @@ class Agent(BaseModel):
     if self.memory.count < self.history_length:
       return
     elif self.config.prior:
-        s_t, action, reward, s_t_plus_1, terminal, w, indices = self.memory.sample(global_step=self.step)
+        s_t, action, reward, s_t_plus_1, terminal, w, rank = self.memory.sample(global_step=self.step)
     else:
       s_t, action, reward, s_t_plus_1, terminal = self.memory.sample()
 
@@ -203,7 +203,7 @@ class Agent(BaseModel):
 
 
     if self.config.prior:
-                self.memory.update_priority(indices, delta_weight) 
+                self.memory.update_priority(rank, delta_weight) 
                 self.memory.rebalance()    
 
     #self.writer.add_summary(summary_str, self.step)
@@ -329,17 +329,22 @@ class Agent(BaseModel):
       q_acted = tf.reduce_sum(self.q * action_one_hot, reduction_indices=1, name='q_acted')
 
       self.delta = self.target_q_t - q_acted
-      self.sampling_weights = tf.placeholder(name = 'sampling_weights', shape = (None), dtype = tf.float32)
-      self.delta_weight = tf.mul(self.delta, self.sampling_weights)
+
+
 
 
 
       self.global_step = tf.Variable(0, trainable=False)
+      
     
       if self.config.prior:
-        self.loss = tf.reduce_mean(clipped_error(self.delta), name='loss')
+        self.sampling_weights = tf.placeholder(name = 'sampling_weights', shape = (None), dtype = tf.float32)
+        self.delta_weight = tf.mul(self.delta, self.sampling_weights)
+        self.loss = tf.reduce_mean(clipped_error(self.delta_weight), name='loss')
       else:
-        self.loss = tf.reduce_mean(clipped_error(self.weighted_delta), name='loss')
+        self.loss = tf.reduce_mean(clipped_error(self.delta), name='loss')
+
+
 
 
       self.learning_rate_step = tf.placeholder('int64', None, name='learning_rate_step')

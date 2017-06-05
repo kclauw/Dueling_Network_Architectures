@@ -1,4 +1,8 @@
 #Code from https://github.com/Damcy/prioritized-experience-replay
+import os
+import random
+import logging
+import numpy as np
 import binary_heap
 import math 
 from .utils import save_npy, load_npy

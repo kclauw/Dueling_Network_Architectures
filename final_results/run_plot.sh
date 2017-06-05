@@ -15,7 +15,8 @@
 #python average_runs.py "Average Q" average_q "space" "Space Invaders" base ddqn dueling dueling_ddqn;
 #python average_runs.py "Max reward per episode" episode_max_reward "space" "Space Invaders" base ddqn dueling dueling_ddqn;
 
-python average_runs.py "Average reward per episode" episode_avg_reward "space" "Space Invaders" base prior prior_dueling_ddqn;
+#python average_runs.py "Average reward per episode" episode_avg_reward "space" "Space Invaders" base prior prior_dueling_ddqn;
+python average_runs.py "Average reward per episode" episode_avg_reward "atlantis" "Atlantis" base prior prior_dueling_ddqn;
 #python average_runs.py "Average reward per episode" episode_avg_reward "space" "Space Invaders" base ddqn;
 #python average_runs.py "Average reward per episode" episode_avg_reward "space" "Space Invaders" base dueling;
 #python average_runs.py "Average reward per episode" episode_avg_reward "space" "Space Invaders" base dueling_ddqn;

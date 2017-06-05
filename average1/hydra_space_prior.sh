@@ -15,5 +15,5 @@ module add openblas
 cd $HOME
 source .bashrc
 source activate dqn2
-cd Dueling_Network_Architectures_prior
+cd Dueling_Network_Architectures_prior4
 python main.py --use_gpu 0 --env_name SpaceInvaders-v0 --is_train 1 --random_seed 456 --prior 1
