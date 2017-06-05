@@ -105,10 +105,8 @@ class PrioritizedMemory:
 
   def sample(self, global_step):
     
-
       distribution = self.build_distribution(self.priority_queue.size)
       rank_list = np.random.choice(range(1, self.priority_queue.size + 1),self.batch_size, p=distribution)
-
       # beta, increase by global_step, max 1
       beta = min(self.beta_zero + (global_step - self.learn_start - 1) * self.beta_grad, 1)
       # find all alpha pow, notice that pdf is a list, start from 0
@@ -127,18 +125,9 @@ class PrioritizedMemory:
       # get experience id according rank_e_id
       experiences = self.retrieve(rank_e_id)
 
-      #experience layout is [s_t, reward, action, s_t_plus_1, terminal]
       s_ts = np.array([experience[0] for experience in experiences])
       rewards = np.array([experience[1] for experience in experiences])
       actions = np.array([experience[2] for experience in experiences])
       s_t_plus_1s = np.array([experience[3] for experience in experiences])
       terminals = np.array([experience[4] for experience in experiences])
-
-
-      if self.cnn_format == 'NHWC':
-
-          #no transpose is needed because the we transpose it already we giving it as input.
-          #the history object transposes it already
-          return s_ts, actions, rewards ,s_t_plus_1s,terminals, w, rank_e_id
-      else:
-          return s_ts, actions, rewards ,s_t_plus_1s,terminals, w, rank_e_id
+      return s_ts, actions, rewards ,s_t_plus_1s,terminals, w, rank_e_id
