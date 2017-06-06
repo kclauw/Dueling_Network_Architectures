@@ -110,7 +110,12 @@ class PrioritizedMemory:
   def sample(self, global_step):
     
       distribution = self.build_distribution()
-      rank_list = np.random.choice(range(1, self.priority_queue.size + 1),self.batch_size, p=distribution)
+      rank_list = []
+      for n in range(1, self.batch_size + 1):
+          index = random.randint(1,self.priority_queue.size)
+          rank_list.append(index)
+
+
       # beta, increase by global_step, max 1
       beta = min(self.beta_zero + (global_step - self.learn_start - 1) * self.beta_grad, 1)
       # find all alpha pow, notice that pdf is a list, start from 0

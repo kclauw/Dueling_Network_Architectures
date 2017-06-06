@@ -1,11 +1,11 @@
 class AgentConfig(object):
-  scale = 10000
+  scale = 10
   display = False
 
   max_step = 5000 * scale
   memory_size = 50 * scale #Reduced memory size
 
-  batch_size = 32
+  batch_size = 4
   random_start = 30
   cnn_format = 'NCHW'
   discount = 0.99
