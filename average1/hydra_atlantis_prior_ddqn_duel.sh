@@ -15,5 +15,5 @@ module add openblas
 cd $HOME
 source .bashrc
 source activate dqn2
-cd Dueling_Network_Architectures_prior4
+cd ./final/Dueling_Network_Architectures_prior4
 python main.py --use_gpu 0 --env_name Atlantis-v0 --is_train 1 --double_q 1 --prior 1 --dueling 1 --random_seed 456
