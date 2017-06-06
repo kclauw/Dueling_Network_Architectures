@@ -31,10 +31,10 @@ class PrioritizedMemory:
     self.beta_grad = (1 - self.beta_zero) / (self.total_steps - self.learn_start)
 
 
-  def build_distribution(self,size):
+  def build_distribution(self):
       # P(i) = (rank i) ^ (-alpha) / sum ((rank i) ^ (-alpha))
       pdf = list(
-          map(lambda x: math.pow(x, -self.alpha), range(1, size + 1))
+          map(lambda x: math.pow(x, -self.alpha), range(1, self.priority_queue.size + 1))
       )
       pdf_sum = math.fsum(pdf)
       return list(map(lambda x: x / pdf_sum, pdf))
@@ -109,7 +109,7 @@ class PrioritizedMemory:
 
   def sample(self, global_step):
     
-      distribution = self.build_distribution(self.priority_queue.size)
+      distribution = self.build_distribution()
       rank_list = np.random.choice(range(1, self.priority_queue.size + 1),self.batch_size, p=distribution)
       # beta, increase by global_step, max 1
       beta = min(self.beta_zero + (global_step - self.learn_start - 1) * self.beta_grad, 1)
