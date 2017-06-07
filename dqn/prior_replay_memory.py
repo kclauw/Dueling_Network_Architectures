@@ -23,6 +23,7 @@ class PrioritizedMemory:
     self.index = 0
     self.record_size = 0
     self.isFull = False
+    self.distri = []
 
     self._experience = {}
     self.priority_queue = binary_heap.BinaryHeap(self.memory_size)
@@ -37,7 +38,8 @@ class PrioritizedMemory:
           map(lambda x: math.pow(x, -self.alpha), range(1, self.priority_queue.size + 1))
       )
       pdf_sum = math.fsum(pdf)
-      return list(map(lambda x: x / pdf_sum, pdf))
+      self.distri = list(map(lambda x: x / pdf_sum, pdf))
+
 
 
   def fix_index(self):
@@ -109,7 +111,7 @@ class PrioritizedMemory:
 
   def sample(self, global_step):
     
-      distribution = self.build_distribution()
+      #distribution = self.build_distribution()
       rank_list = []
       for n in range(1, self.batch_size + 1):
           index = random.randint(1,self.priority_queue.size)
@@ -119,7 +121,7 @@ class PrioritizedMemory:
       # beta, increase by global_step, max 1
       beta = min(self.beta_zero + (global_step - self.learn_start - 1) * self.beta_grad, 1)
       # find all alpha pow, notice that pdf is a list, start from 0
-      prob_i = [distribution[v - 1] for v in rank_list]
+      prob_i = [self.distri[v - 1] for v in rank_list]
       # w = (N * P(i)) ^ (-beta) / max w
       w = np.power(np.array(prob_i) * self.memory_size, -beta)
       w_max = max(w)

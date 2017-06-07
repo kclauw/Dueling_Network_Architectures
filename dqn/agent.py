@@ -142,6 +142,7 @@ class Agent(BaseModel):
     reward = max(self.min_reward, min(self.max_reward, reward))
 
     if self.config.prior:
+      print("observe")
       state = self.history.get()
       self.history.add(screen)
       next_state = self.history.get()
@@ -154,10 +155,18 @@ class Agent(BaseModel):
     #self.history.add(screen)
     #INSERT INTO THE EXPERIENCE REPLAY
     #self.memory.add(screen, reward, action, terminal)
+    print(self.step)
+    print(self.learn_start)
+    if self.config.prior:
+      if self.step <= self.memory.memory_size:
+        print("BUILD")
+        self.memory.build_distribution()
+
 
 
     if self.step > self.learn_start:
       if self.step % self.train_frequency == 0:
+        #self.memory.build_distribution()
         self.q_learning_mini_batch()
 
       if self.step % self.target_q_update_step == self.target_q_update_step - 1:
