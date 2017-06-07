@@ -8,12 +8,12 @@
 # output and error files
 #PBS -o atl_prior1.out
 #PBS -e atl_prior1.err
-#PBS -N atl_prior1
+#PBS -N atl_priorFINAL
 #PBS -V
 
 module add openblas
 cd $HOME
 source .bashrc
 source activate dqn2
-cd ./final2/Dueling_Network_Architectures
+cd Dueling_Network_Architectures
 python main.py --use_gpu 0 --env_name Atlantis-v0 --is_train 1 --random_seed 456 --prior 1

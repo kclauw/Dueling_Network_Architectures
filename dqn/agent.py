@@ -159,14 +159,14 @@ class Agent(BaseModel):
     print(self.learn_start)
     if self.config.prior:
       if self.step <= self.memory.memory_size:
-        print("BUILD")
+        #print("BUILD")
         self.memory.build_distribution()
+
 
 
 
     if self.step > self.learn_start:
       if self.step % self.train_frequency == 0:
-        #self.memory.build_distribution()
         self.q_learning_mini_batch()
 
       if self.step % self.target_q_update_step == self.target_q_update_step - 1:
